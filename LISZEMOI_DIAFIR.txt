@@ -1,0 +1,14 @@
+J'ai installé l'interface utilisateur SPIDIAGMIR sur ce poste.
+
+vous trouverez dans le dossier `venv` un environnement python contenant les modules utilisés par l'application (la liste est déclarée dans le fichier requirements.txt)
+
+J'ai également mis en place un fichier start.bat pour facilement lancer le logiciel. Il suffira de ce connecter à l'adresse affichée pour accéder à spidiagmir.
+
+
+
+
+
+
+Attention, bouger le dossier d'installation (qui est actuellement sur le bureau) cassera le logiciel !
+
+Vous pouvez cependant le réinstaller, il suffit juste d'avoir Python3.11 avec les modules de requirements.txt d'installés !

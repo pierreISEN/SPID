@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Article {{ article.pmcid }}</h1>
+<br>
+<b>Title:</b> {{ article.title }}<br>
+<b>Keywords:</b> {{ article.keywords }}<br>
+<a href="{{ " https://www.ncbi.nlm.nih.gov/pmc/articles/PMC" + article.pmcid|string }}" target="_blank">Link to
+    article</a><br>
+
+<!--If the article's table attribute is true, green yes, else red no-->
+<b>Table(s):</b> {% if article.hastables %}<span style="color: green;">Yes</span>{% else %}<span
+    style="color: red;">No</span>{% endif %}<br>
+
+
+<h2>Metadata</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">category</th>
+            <th scope="col">entity</th>
+            <th scope="col">source text</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for metadata in article.metadata %}
+        <tr>
+            <td>{{ metadata.umls_category_name }}</td>
+            <td>{{ metadata.umls_entity_name }}</td>
+            <td>{{ metadata.source_text }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Spectral Bands</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Wavenumber</th>
+            <th scope="col">Attribution</th>
+            <th scope="col">Source</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for band in article.spectral_bands %}
+        <tr>
+            <td>{{ band.position }}</td>
+            <td>{{ band.attribution }}</td>
+            <td>{{ band.sentence }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Spectral Ranges</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Start</th>
+            <th scope="col">End</th>
+            <th scope="col">Attribution</th>
+            <th scope="col">Source</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for range in article.spectral_ranges %}
+        <tr>
+            <td>{{ range.start_position }}</td>
+            <td>{{ range.end_position }}</td>
+            <td>{{ range.attribution }}</td>
+            <td>{{ range.sentence }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

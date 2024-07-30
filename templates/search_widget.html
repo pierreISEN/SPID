@@ -1,0 +1,208 @@
+{% block content %}
+<h1>Search</h1>
+
+<h2>Search via query</h2>
+
+<div class="form-group">
+    <label for="wavenumber"><b>Wavenumber</b></label>
+    <input type="text" class="form-control" id="wavenumber"
+        placeholder="Enter wavenumber (xxxx) or wavenumber range (xxxx - xxxx)">
+
+    <label for="window-size"><b>Spectral window size (±)</b></label>
+    <input type="number" class="form-control" id="window-size" placeholder="Enter wavenumber window size (cm-1)"
+        value="10">
+
+    <label for="keywords"><b>Keywords</b></label>
+    <input type="text" class="form-control" id="keywords" placeholder="Enter keywords (____, ____, [....])">
+
+    <label for="attributions"><b>Attributions</b></label>
+    <input type="text" class="form-control" id="attributions" placeholder="Enter attributions (____, ____, [....])">
+
+    <label for="metadata"><b>Metadata</b></label>
+    <input type="text" class="form-control" id="metadata" placeholder="Enter metadata (____, ____, [....])">
+
+    <div class="row">
+        <div class="col">
+            <b>Samples</b>
+            <div id="samples" class="tree">
+                <ul>
+                    <li id="018">Embryonic Structure</li>
+                    <li id="021">Fully Formed Anatomical Structure
+                        <ul>
+                            <li id="023">Body Part, Organ, or Organ Component</li>
+                            <li id="025">Cell</li>
+                            <li id="026">Cell Component</li>
+                            <li id="024">Tissue</li>
+                        </ul>
+                    </li>
+                    <li id="031">Body substance</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col">
+            <b>Species</b>
+            <div id="species" class="tree">
+                <ul>
+                    <li id="001">Organism
+                        <ul>
+                            <li id="194">Archaeon</li>
+                            <li id="007">Bacterium</li>
+                            <li id="204">Eukaryote
+                                <ul>
+                                    <li id="008">Animal
+                                        <ul>
+                                            <li id="010">Vertebrate
+                                                <ul>
+                                                    <li id="011">Amphibian</li>
+                                                    <li id="012">Bird</li>
+                                                    <li id="013">Fish</li>
+                                                    <li id="015">Mammal
+                                                        <ul>
+                                                            <li id="016">Human</li>
+                                                        </ul>
+                                                    </li>
+                                                    <li id="014">Reptile</li>
+                                                </ul>
+                                            </li>
+                                            <li id="004">Fungus</li>
+                                            <li id="002">Plant</li>
+                                        </ul>
+                                    </li>
+                                    <li id="005">Virus</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <br />
+
+    <!-- Reserved space for an error -->
+    <div id="error" class="alert alert-danger" role="alert" style="display: none;">
+        <strong>Error:</strong> <span id="error-message-query"></span>
+    </div>
+
+    <!-- submit button (wide), which calls submitForm() -->
+    <button type="submit" class="btn btn-primary btn-block" onclick="submitFormQuery()">Search</button>
+
+    <br />
+
+    <div class="container rounded" style="background-color: #f0f0f0;">
+        <h1>Search Results</h1>
+        <h2>Bands</h2>
+
+        <table id="query-result-table-bands" data-toggle="table" data-pagination="true" data-search="true"
+            data-search-highlight="true">
+            <thead>
+                <tr>
+                    <th data-field="article_id" data-sortable="true" data-formatter='article_formatter'>PMCID | Title
+                    </th>
+                    <th data-field="position" data-sortable="true">Wavenumber</th>
+                    <th data-field="attribution" data-sortable="true">Attribution</th>
+                </tr>
+            </thead>
+        </table>
+
+        <button type="button" class="btn btn-primary" onclick="print_band_table()">Print Bands Table</button>
+        <button type="button" class="btn btn-primary" onclick="downloadCSV()">Download CSV</button>
+
+        <br />
+
+        <h2>Ranges</h2>
+
+        <table id="query-result-table-ranges" data-toggle="table" data-pagination="true" data-search="true"
+            data-search-highlight="true">
+            <thead>
+                <tr>
+                    <th data-field="article_id" data-sortable="true" data-formatter='article_formatter'>PMCID | Title
+                    </th>
+                    <th data-field="start" data-sortable="true">Start</th>
+                    <th data-field="end" data-sortable="true">End</th>
+                    <th data-field="attribution" data-sortable="true">Attribution</th>
+                </tr>
+            </thead>
+        </table>
+
+        <button type="button" class="btn btn-primary" onclick="print_range_tables()">Print Ranges Table</button>
+    </div>
+</div>
+
+<h2>Get a specific article</h2>
+
+<div class="form-group">
+    <label for="article"><b>Article</b></label>
+    <input type="text" class="form-control" id="article" placeholder="Enter article name or PMCID">
+
+    <br />
+
+    <!-- Reserved space for an error -->
+    <div id="error-article" class="alert alert-danger" role="alert" style="display: none;">
+        <strong>Error:</strong> <span id="error-message-article"></span>
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary btn-block" onclick="submitFormArticle()">Search</button>
+
+    <br />
+
+    <div class="container rounded" style="background-color: #f0f0f0;">
+        <h1>Search Results</h1>
+        <h2>Articles</h2>
+
+        <table id="query-result-table-articles" data-toggle="table" data-pagination="true" data-search="true"
+            data-search-highlight="true">
+            <thead>
+                <tr>
+                    <th data-field="article_id" data-sortable="true" data-formatter='article_formatter'>PMCID | Title
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<script>
+    function convertToCSV(objArray) {
+        const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+        let str = 'PMCID/Title,Wavenumber,Attribution\r\n';
+
+        for (let i = 0; i < array.length; i++) {
+            let line = '';
+            line += array[i]['article_id'] + ',';
+            line += array[i]['position'] + ',';
+            line += array[i]['attribution'];
+            str += line + '\r\n';
+        }
+        return str;
+    }
+
+    function downloadCSV() {
+        // Remove the previous CSV file if it exists
+        const oldFile = document.getElementById("download-csv-link");
+        if (oldFile) {
+            oldFile.remove();
+        }
+
+        const data = $('#query-result-table-bands').bootstrapTable('getData');
+        const csv = convertToCSV(data);
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "bands_data.csv");
+            link.setAttribute("id", "download-csv-link");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+</script>
+
+{% endblock %}

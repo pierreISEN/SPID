@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Welcome to Spidiagmir</h1>
+<p>Spidiagmir is a project led by Diafir and the Dupuy De Lôme Research Institute, which exposes data extracted from
+    thousands of biomedical articles!</p>
+
+{% include 'search_widget.html' %}
+<a href="{{ url_for('analyse') }}" class="btn btn-primary mt-4">Go to Analysis Page</a>
+
+{% endblock %}
